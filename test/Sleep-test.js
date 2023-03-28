@@ -2,6 +2,7 @@ import { expect } from 'chai';
 import Sleep from '../src/Sleep';
 import sleepTestData from '../src/data/sleep-test-data.js';
 import User from '../src/User';
+import userTestData from '../src/data/user-test-data.js';
 
 let sleep;
 let user;
@@ -9,23 +10,17 @@ let sleep2;
 
 describe('Sleep Repository', () => {
   beforeEach(() => {
-    user = new User({
-      "id": 1,
-      "name": "Trystan Gorczany",
-      "address": "9484 Lucas Flat, West Kittymouth WA 67504",
-      "email": "Taurean_Pollich31@gmail.com",
-      "strideLength": 4,
-      "dailyStepGoal": 7000,
-      "friends": [
-        5,
-        43,
-        46,
-        11
-      ]
-    });
-
+    user = new User(userTestData.userTestData[0])
     sleep = new Sleep(user.id, sleepTestData.sleepTestData);
     sleep2 = new Sleep();
+  });
+
+  it.skip('should be a function', () => {
+    expect(Sleep).to.be.a('function');
+  });
+
+  it('should be an instance of sleep', () => {
+    expect(sleep).to.be.instanceof(Sleep);
   });
 
   it.skip('should store an array of data', () => {
