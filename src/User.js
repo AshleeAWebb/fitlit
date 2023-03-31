@@ -15,6 +15,7 @@ class User {
   }
 
   getFriends(dataSet) {
+    console.log(data)
     if (this.friends === undefined) {
       return "Embrace the Solitude";
     } else if (this.friends.length) {
