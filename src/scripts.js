@@ -45,6 +45,12 @@ formInputs.forEach(input => inputs.push(input));
 
 // DM Methods
 
+const checkValue = () => {
+  if (inputs.every(input => input.value)) {
+    inputError.innerText = "";
+  }
+}
+
 const getUserData = (infoType, array, userInst = user) => {
   return array[infoType].filter(data => data.userID === userInst.id).reverse();
 };
@@ -149,6 +155,8 @@ window.addEventListener('load', () => {
   .catch(err => console.log(err.message));
 });
 
+inputs.forEach(input => input.addEventListener('input', checkValue))
+
 openModalBtn.onclick = function() {
   modal.style.display = "block";
 };
@@ -167,7 +175,7 @@ userInputForm.addEventListener('submit', function(event) {
   event.preventDefault();
   
   if (inputs.some(input => !input.value)) {
-    inputError.innerText = "all fields are required";
+    inputError.innerText = "All fields are required";
   } else {
     const userInputData = {
       userID: user.id,

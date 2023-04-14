@@ -17,10 +17,12 @@ class User {
       return "Embrace the Solitude";
     } else if (this.friends.length) {
       let friends = dataSet.filter(friend => this.friends.includes(friend.id));
-      return friends.map(buddy => {
+      friends = friends.map(buddy => {
         let splitName = buddy.name.split(' ');
         return splitName[0];
       });
+
+      return friends.join(", ")
     };
   };
 
