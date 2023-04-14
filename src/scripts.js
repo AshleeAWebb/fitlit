@@ -30,7 +30,8 @@ const firstName = document.getElementById('userName'),
       userInputButton = document.getElementById('userInputBtn'),
       openModalBtn = document.getElementById('openModalBtn'),
       closeBtn = document.querySelector(".close-btn"),
-      stepChallengeBox = document.getElementById('stepChallengeBox');
+      stepChallengeBox = document.getElementById('stepChallengeBox'),
+      inputError = document.getElementById('errorMessage');
 
 // Global Variables
 let users,
@@ -40,14 +41,8 @@ let users,
     inputs = [];
 
 formInputs.forEach(input => inputs.push(input));
-userInputButton.disabled = true;
 
 // DOM Methods
-let changeButton = () => {
-  if (inputs.every(input => input.value)) {
-    userInputButton.disabled = false;
-  }
-};
 
 const getUserData = (infoType, array) => {
   return array[infoType].filter(data => data.userID === user.id).reverse();
@@ -171,37 +166,38 @@ window.onclick = function(event) {
   };
 };
 
-inputs.forEach(input => input.addEventListener('input', changeButton));
-
 userInputForm.addEventListener('submit', function(event) {
   event.preventDefault();
 
-  const userInputData = {
-    userID: user.id,
-    date: convertDate(),
-    flightsOfStairs: parseInt(inputs.find(input => input.id === "flightsOfStairs").value),
-    minutesActive: parseInt(inputs.find(input => input.id === "activeMinutes").value),
-    numSteps: parseInt(inputs.find(input => input.id === "numSteps").value)
-  };
+  if (inputs.some(input => !input.value)) {
+    inputError.innerText = "all fields are required";
+  } else {
+    const userInputData = {
+      userID: user.id,
+      date: convertDate(),
+      flightsOfStairs: parseInt(inputs.find(input => input.id === "flightsOfStairs").value),
+      minutesActive: parseInt(inputs.find(input => input.id === "activeMinutes").value),
+      numSteps: parseInt(inputs.find(input => input.id === "numSteps").value)
+    };
 
-  postActivityData(userInputData)
-  .then(res => res.json())
-  .then(res => {
-    console.log('successfully recorded: ', res);
-
-    fetchActivityData()
+    postActivityData(userInputData)
     .then(res => res.json())
-    .then(data => {
-      user.activity = new Activity(getUserData('activityData', data), user.strideLength);
-      charts[2].destroy();
-      charts.splice(2,1);
-      displayActivity();
+    .then(res => {
+      console.log('successfully recorded: ', res);
+
+      fetchActivityData()
+      .then(res => res.json())
+      .then(data => {
+        user.activity = new Activity(getUserData('activityData', data), user.strideLength);
+        charts[2].destroy();
+        charts.splice(2,1);
+        displayActivity();
+      })
+      .catch(err => console.log(err.message));
     })
     .catch(err => console.log(err.message));
-  })
-  .catch(err => console.log(err.message));
   
-  userInputForm.reset();
-  userInputButton.disabled = true;
-  modal.style.display = "none";
+    userInputForm.reset();
+    modal.style.display = "none";
+  }
 });
