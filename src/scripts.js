@@ -175,7 +175,7 @@ userInputForm.addEventListener('submit', function(event) {
   event.preventDefault();
   
   if (inputs.some(input => !input.value)) {
-    inputError.innerText = "all fields are required";
+    inputError.innerText = "All fields are required";
   } else {
     const userInputData = {
       userID: user.id,
