@@ -28,7 +28,6 @@ const firstName = document.getElementById('userName'),
       userInputForm = document.querySelector('form'),
       formInputs = document.querySelectorAll('.data-input'),
       modal = document.getElementById('activityModal'),
-      userInputButton = document.getElementById('userInputBtn'),
       openModalBtn = document.getElementById('openModalBtn'),
       closeBtn = document.querySelector(".close-btn"),
       stepChallengeBox = document.getElementById('stepChallengeBox'),
@@ -45,11 +44,6 @@ formInputs.forEach(input => inputs.push(input));
 
 
 // DM Methods
-let changeButton = () => {
-  if (inputs.every(input => input.value)) {
-    userInputButton.disabled = false;
-  }
-};
 
 const getUserData = (infoType, array, userInst = user) => {
   return array[infoType].filter(data => data.userID === userInst.id).reverse();
@@ -122,11 +116,11 @@ const displayActivity = () => {
 
 const resetDOM = () => {
   charts[2].destroy()
-  charts.pop(2)
+  charts.pop()
   displayActivity()
-
+  console.log('chart', charts)
+  inputError.innerText = "";
   userInputForm.reset();
-  userInputButton.disabled = true;
   modal.style.display = "none";
 }
 
