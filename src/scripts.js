@@ -121,10 +121,9 @@ const displayActivity = () => {
 };
 
 const resetDOM = () => {
-  charts[2].destroy()
+  charts.find(chart => chart.canvas.id === "activityBoxWeek").destroy()
   charts.pop()
   displayActivity()
-  console.log('chart', charts)
   inputError.innerText = "";
   userInputForm.reset();
   modal.style.display = "none";
@@ -189,7 +188,7 @@ userInputForm.addEventListener('submit', function(event) {
     .then(res => res.json())
     .then(res => {
       console.log('successfully recorded: ', res);
-
+      
       fetchActivityData()
       .then(res => res.json())
       .then(data => {
