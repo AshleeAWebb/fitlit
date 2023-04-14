@@ -1,9 +1,12 @@
 // Webpack Links
 import { fetchAllData } from '../src/apiCalls';
 import { postActivityData } from '../src/apiCalls';
+import { fetchActivityData } from '../src/apiCalls';
 import { displayChart } from '../src/charts';
 import { displayChallengeChart } from '../src/charts';
-import './css/styles.css';
+import { charts } from '../src/charts';
+import dayjs from 'dayjs';
+import './css/styles.scss';
 import './images/fitlit-logo.png';
 import './images/hydration-logo.png';
 import './images/activity-logo.png';
@@ -23,37 +26,52 @@ const firstName = document.getElementById('userName'),
       activityInfo = document.getElementById('activityInfoBox'),
       activityWeek = document.getElementById('activityBoxWeek'),
       userInputForm = document.querySelector('form'),
-      userInputButton = document.getElementById('userInputBtn'),
-      userInputDate = document.getElementById('date'),
-      userInputStairs = document.getElementById('flightsOfStairs'),
-      userInputMins = document.getElementById('activeMinutes'),
-      userInputSteps = document.getElementById('numSteps'),
+      formInputs = document.querySelectorAll('.data-input'),
       modal = document.getElementById('activityModal'),
       openModalBtn = document.getElementById('openModalBtn'),
-      span = document.querySelector(".close-btn"),
-      stepChallengeBox = document.getElementById('stepChallengeBox');
+      closeBtn = document.querySelector(".close-btn"),
+      stepChallengeBox = document.getElementById('stepChallengeBox'),
+      inputError = document.getElementById('errorMessage');
 
 // Global Variables
-let userList,
-    userObj,
-    sleepObj,
-    hydrationObj,
-    activityObj,
+let users,
+    user,
     userChallengeData,
-    friendsChallengeData = [];
+    friendsChallengeData = [],
+    inputs = [];
 
-userInputButton.disabled = true;
+formInputs.forEach(input => inputs.push(input));
 
-// DOM Methods
-let changeButton = () => {
-  if (userInputDate.value && userInputStairs.value && userInputMins.value && userInputSteps.value) {
-    userInputButton.disabled = false;
-  }
+
+// DM Methods
+
+const getUserData = (infoType, array, userInst = user) => {
+  return array[infoType].filter(data => data.userID === userInst.id).reverse();
 };
 
-const getUserData = (infoType, array) => {
-  return array[infoType].filter(data => data.userID === userObj.id).reverse();
+const createFriends = (info) => {
+  user.friends = user.friends.map(friend => {
+    return new User(users.find(user => user.id === friend));
+  });
+  user.friends.forEach(friend => {
+    friend.activity = new Activity(getUserData('activityData', info[3], friend));    });
 };
+
+const postChallengeStats = () => {
+userChallengeData = getStepChallengeStats(user);
+user.friends.forEach(friend => {
+  friendsChallengeData.push(getStepChallengeStats(friend));
+});
+};
+
+const getStepChallengeStats = (challenger) => {
+const averageStepGoal = challenger.dailyStepGoal;
+const stepsForTheWeek = challenger.activity.getLatestWeek();
+const dailyGoalAchieved = stepsForTheWeek.filter((steps) => steps >= averageStepGoal);
+return { name: challenger.name, daysReached: dailyGoalAchieved.length };
+};
+
+//DOM methods
 
 const displayCurrentUser = (user) => {
   firstName.innerText = `${user.getName()}`;
@@ -61,8 +79,8 @@ const displayCurrentUser = (user) => {
   <li><b>Email:</b> ${user.email}</li> 
   <li>Stride Length: ${user.strideLength}</li>
   <li>Daily Step Goal: ${user.dailyStepGoal}</li>
-  <li>Friends: ${user.getFriends(userList)}</li>
-  <li>Your Step Goal Compared to All Users: ${user.dailyStepGoal}/${user.getAverage(userList)}</li>`
+  <li>Friends: ${user.getFriends(users)}</li>
+  <li>Your Step Goal Compared to All Users: ${user.dailyStepGoal}/${user.getAverage(users)}</li>`
 };
 
 const displaySleepInfo = (sleep) => {
@@ -78,54 +96,64 @@ const displaySleepInfo = (sleep) => {
 };
 
 const displayHydration = (userId) => {
-  let currentDate = hydrationObj.data[0].date;
-  let weekData = hydrationObj.findWeeklyHydration();
+  let currentDate = user.hydration.data[0].date;
+  let weekData = user.hydration.findWeeklyHydration();
 
-  hydrationInfo.innerHTML = `<li>Average daily water intake: ${hydrationObj.findAvgDailyHydration(userId)}oz</li>
-  <li>Fluid ounces drank today: ${hydrationObj.getHydrationSpecificDay(currentDate)}oz</li>`;
+  hydrationInfo.innerHTML = `<li>Average daily water intake: ${user.hydration.findAvgDailyHydration(userId)}oz</li>
+  <li>Fluid ounces drank today: ${user.hydration.getHydrationSpecificDay(currentDate)}oz</li>`;
   displayChart(weekData, hydrationWeek, "Hydration for the Week");
 };
 
 const displayActivity = () => {
-  let currentDate = activityObj.data[0].date;
-  let weekData = activityObj.getLatestWeek();
+  let currentDate = user.activity.data[0].date;
+  let weekData = user.activity.getLatestWeek();
 
-  activityInfo.innerHTML = `<li>Latest # of Steps: ${activityObj.getDailyActivityInfo(currentDate, 'numSteps')}</li>
-  <li>Latest # of Minutes Active: ${activityObj.getDailyActivityInfo(currentDate, 'minutesActive')}</li>
-    <li>Latest Distance Walked: ${activityObj.calculateMiles(currentDate)}</li>`;
+  activityInfo.innerHTML = `<li>Latest # of Steps: ${user.activity.getDailyActivityInfo(currentDate, 'numSteps')}</li>
+  <li>Latest # of Minutes Active: ${user.activity.getDailyActivityInfo(currentDate, 'minutesActive')}</li>
+    <li>Latest Distance Walked: ${user.activity.calculateMiles(currentDate)}</li>`;
   displayChart(weekData, activityWeek, "Activity for the Week");
-  };
+};
 
-  const getStepChallengeStats = (challenger) => {
-    const averageStepGoal = challenger.dailyStepGoal;
-    const stepsForTheWeek = challenger.activity.getLatestWeek();
-    const dailyGoalAchieved = stepsForTheWeek.filter((steps) => steps >= averageStepGoal);
-
-    return { name: challenger.name, daysReached: dailyGoalAchieved.length };
-  };
-
-  const createFriends = (info) => {
-    userObj.friends = userObj.friends.map(friend => {
-      return new User(userList.find(anom => anom.id === friend))
-    });
-    userObj.friends.forEach(friend => {
-      friend.activity = new Activity(info[3].activityData.filter(activ => activ.userID === friend.id).reverse());
-    });
-  };
-
-  const postChallengeStats = () => {
-    userChallengeData = getStepChallengeStats(userObj);
-    userObj.friends.forEach(friend => {
-      friendsChallengeData.push(getStepChallengeStats(friend))
-    });
-  };
+const resetDOM = () => {
+  charts[2].destroy()
+  charts.pop()
+  displayActivity()
+  console.log('chart', charts)
+  inputError.innerText = "";
+  userInputForm.reset();
+  modal.style.display = "none";
+}
 
 // Event Listeners
+window.addEventListener('load', () => {
+  fetchAllData()
+  .then(data => {
+      users = data[0].users;
+
+      user = new User(data[0].users[Math.floor(Math.random() * 50)]);
+      displayCurrentUser(user);
+
+      user.hydration = new Hydration(getUserData('hydrationData', data[1]));
+      displayHydration(user.id);
+
+      user.sleep = new Sleep(getUserData('sleepData', data[2]));
+      displaySleepInfo(user.sleep);
+
+      user.activity = new Activity(getUserData('activityData', data[3]), user.strideLength);
+      displayActivity(user.id);
+
+      createFriends(data);
+      postChallengeStats();
+      displayChallengeChart(stepChallengeBox, userChallengeData, friendsChallengeData);
+    })
+  .catch(err => console.log(err.message));
+});
+
 openModalBtn.onclick = function() {
   modal.style.display = "block";
 };
 
-span.onclick = function() {
+closeBtn.onclick = function() {
   modal.style.display = "none";
 };
 
@@ -135,55 +163,33 @@ window.onclick = function(event) {
   };
 };
 
-window.addEventListener('load', () => {
-  fetchAllData()
-  .then(data => {
-      userList = data[0].users;
-
-      userObj = new User(data[0].users[Math.floor(Math.random() * 50)]);
-      displayCurrentUser(userObj);
-
-
-      userObj.hydration = new Hydration(getUserData('hydrationData', data[1]));
-      hydrationObj = userObj.hydration;
-      displayHydration(userObj.id);
-
-      userObj.sleep = new Sleep(getUserData('sleepData', data[2]));
-      sleepObj = userObj.sleep;
-      displaySleepInfo(sleepObj);
-
-      userObj.activity = new Activity(getUserData('activityData', data[3]), userObj.strideLength);
-      activityObj = userObj.activity;
-      displayActivity(userObj.id);
-      
-      createFriends(data);
-      postChallengeStats();
-      displayChallengeChart(stepChallengeBox, userChallengeData, friendsChallengeData);
-    });
-});
-
-userInputDate.addEventListener('input', changeButton);
-
-userInputStairs.addEventListener('input', changeButton);
-
-userInputMins.addEventListener('input', changeButton);
-
-userInputSteps.addEventListener('input', changeButton);
-
 userInputForm.addEventListener('submit', function(event) {
   event.preventDefault();
+  
+  if (inputs.some(input => !input.value)) {
+    inputError.innerText = "all fields are required";
+  } else {
+    const userInputData = {
+      userID: user.id,
+      date: dayjs().format('YYYY/MM/DD'),
+      flightsOfStairs: parseInt(inputs.find(input => input.id === "flightsOfStairs").value),
+      minutesActive: parseInt(inputs.find(input => input.id === "activeMinutes").value),
+      numSteps: parseInt(inputs.find(input => input.id === "numSteps").value)
+    };
 
-  const userInputData = {
-    userID: userObj.id,
-    date: userInputDate,
-    flightsOfStairs: parseInt(userInputStairs.value),
-    minutesActive: parseInt(userInputMins.value),
-    numSteps: parseInt(userInputSteps.value)
-  };
-  
-  postActivityData(userInputData);
-  
-  userInputForm.reset();
-  userInputButton.disabled = true;
-  modal.style.display = "none";
+    postActivityData(userInputData)
+    .then(res => res.json())
+    .then(res => {
+      console.log('successfully recorded: ', res);
+
+      fetchActivityData()
+      .then(res => res.json())
+      .then(data => {
+        user.activity = new Activity(getUserData('activityData', data), user.strideLength);
+        resetDOM()
+      })
+      .catch(err => console.log(err.message));
+    })
+    .catch(err => console.log(err.message));
+   }
 });
