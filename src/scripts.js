@@ -30,8 +30,9 @@ const firstName = document.getElementById('userName'),
       modal = document.getElementById('activityModal'),
       userInputButton = document.getElementById('userInputBtn'),
       openModalBtn = document.getElementById('openModalBtn'),
-      closeBtn = document.getElementById('close-btn'),
-      stepChallengeBox = document.getElementById('stepChallengeBox');
+      closeBtn = document.querySelector(".close-btn"),
+      stepChallengeBox = document.getElementById('stepChallengeBox'),
+      inputError = document.getElementById('errorMessage');
 
 // Global Variables
 let users,
@@ -41,7 +42,7 @@ let users,
     inputs = [];
 
 formInputs.forEach(input => inputs.push(input));
-userInputButton.disabled = true;
+
 
 // DM Methods
 let changeButton = () => {
@@ -168,33 +169,33 @@ window.onclick = function(event) {
   };
 };
 
-inputs.forEach(input => input.addEventListener('input', changeButton));
-
 userInputForm.addEventListener('submit', function(event) {
   event.preventDefault();
-
-  const userInputData = {
-    userID: user.id,
-    date: dayjs().format('YYYY/MM/DD'),
-    flightsOfStairs: parseInt(inputs.find(input => input.id === "flightsOfStairs").value),
-    minutesActive: parseInt(inputs.find(input => input.id === "activeMinutes").value),
-    numSteps: parseInt(inputs.find(input => input.id === "numSteps").value)
-  };
-
   
+  if (inputs.some(input => !input.value)) {
+    inputError.innerText = "all fields are required";
+  } else {
+    const userInputData = {
+      userID: user.id,
+      date: dayjs().format('YYYY/MM/DD'),
+      flightsOfStairs: parseInt(inputs.find(input => input.id === "flightsOfStairs").value),
+      minutesActive: parseInt(inputs.find(input => input.id === "activeMinutes").value),
+      numSteps: parseInt(inputs.find(input => input.id === "numSteps").value)
+    };
 
-  postActivityData(userInputData)
-  .then(res => res.json())
-  .then(res => {
-    console.log('successfully recorded: ', res);
-
-    fetchActivityData()
+    postActivityData(userInputData)
     .then(res => res.json())
-    .then(data => {
-      user.activity = new Activity(getUserData('activityData', data), user.strideLength);
-      resetDOM()
+    .then(res => {
+      console.log('successfully recorded: ', res);
+
+      fetchActivityData()
+      .then(res => res.json())
+      .then(data => {
+        user.activity = new Activity(getUserData('activityData', data), user.strideLength);
+        resetDOM()
+      })
+      .catch(err => console.log(err.message));
     })
     .catch(err => console.log(err.message));
-  })
-  .catch(err => console.log(err.message));
+   }
 });
