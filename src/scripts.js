@@ -105,7 +105,6 @@ const getStepChallengeStats = (challenger) => {
   return { name: challenger.name, daysReached: dailyGoalAchieved.length };
 };
 
-<<<<<<<<< Temporary merge branch 1
   const createFriends = (info) => {
     user.friends = user.friends.map(friend => {
       return new User(users.find(anom => anom.id === friend))
@@ -132,14 +131,6 @@ const getStepChallengeStats = (challenger) => {
   
   return splitDate.join('');
 }
-
-const getStepChallengeStats = (challenger) => {
-  const averageStepGoal = challenger.dailyStepGoal;
-  const stepsForTheWeek = challenger.activity.getLatestWeek();
-  const dailyGoalAchieved = stepsForTheWeek.filter((steps) => steps >= averageStepGoal);
-
-  return { name: challenger.name, daysReached: dailyGoalAchieved.length };
-};
 
 // Event Listeners
 window.addEventListener('load', () => {
@@ -189,10 +180,6 @@ userInputForm.addEventListener('submit', function(event) {
   const userInputData = {
     userID: user.id,
     date: convertDate(),
-=========
-    userID: userObj.id,
-    date: Date(),
->>>>>>>>> Temporary merge branch 2
     flightsOfStairs: parseInt(userInputStairs.value),
     minutesActive: parseInt(userInputMins.value),
     numSteps: parseInt(userInputSteps.value)
