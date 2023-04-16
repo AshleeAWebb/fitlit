@@ -2,6 +2,8 @@
 $blue: rgb(86, 153, 248);
 $transparent-blue: rgba(86, 153, 248, 0.5);
 $warm-black: rgba(26, 14, 1, 0.5);
+$border-radius-large: 50px;
+$box-shadow: -2px 0px 6px 0px $transparent-blue;
 
 /* wide ranging */
 * {
@@ -36,7 +38,7 @@ body {
   gap: 10px;
   max-width: 100%;
   overflow-wrap: normal;
-  padding: 0px 200px;
+  padding: 45px 200px;
 }
 
 header {
@@ -50,6 +52,8 @@ section {
   display: flex;
   justify-content: space-evenly;
   width: 100vw;
+  max-width: 900px;
+  max-height: 420px;
 }
 
 ul {  
@@ -63,7 +67,7 @@ ul {
   }
 
 .button{
-  box-shadow: -2px 0px 6px 0px $transparent-blue;
+  box-shadow: $box-shadow;
   border: $transparent-blue solid 4px;
   padding: 10px;
   background-color: white;
@@ -87,11 +91,10 @@ ul {
 }
 
 /* activity styling */
-
 .activity-container {
   align-items: center;
   height: 300px;
-  box-shadow: -2px 0px 6px 0px $transparent-blue;
+  box-shadow: $box-shadow;
   background-color: white;
   border-radius: 50px;
 }
@@ -101,6 +104,8 @@ ul {
     width: 25%;
     padding: 10px;
     position: relative;
+    max-height: 240px;
+    margin: 3px;
 
     h2 {
       font-size: 20px;
@@ -129,7 +134,7 @@ ul {
 /*Other boxes */
 .sleep, .activity, .hydration {
   background-color: #fff;
-  box-shadow: -3px 0px 6px 1px $transparent-blue;
+  box-shadow: $box-shadow;
 }
 
 .info-card {
@@ -138,7 +143,7 @@ ul {
   margin: 8px;
   display: flex;
   flex-direction: column;
-  box-shadow: -2px 0px 6px 0px $transparent-blue;
+  box-shadow: $box-shadow;
 }
 
 /* logo, header, user info */
