@@ -30,7 +30,8 @@ This project was completed during two 1 week sprints in the second module of the
 - Chai
 - webpack
 - ### third party extensions
-  - chartjs
+  - Chart.js
+  - Day.js
   
 ## Contributors 
 - Ashlee Webb: [github](https://github.com/AshleeAWebb) | [linkedin](https://www.linkedin.com/in/ashlee-webb-0b592199/)
