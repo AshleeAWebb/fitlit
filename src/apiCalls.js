@@ -1,6 +1,11 @@
 const fetchAPI = (url) => {
   return fetch(url)
-  .then(data => data.json());
+  .then(res => {
+      if (!res.ok) {
+        throw new Error('Something went wrong!')
+      }
+      return res.json()
+    })
 };
 
 const fetchAllData = () => {
@@ -20,10 +25,22 @@ const postActivityData = (data) => {
       'Content-Type': 'application/json'
     }
   })
+  .then(res => {
+      if (!res.ok) {
+        throw new Error('Something went wrong!')
+      }
+      return res.json()
+    })
 };
 
 const fetchActivityData = () => {
   return fetch('http://localhost:3001/api/v1/activity')
+  .then(res => {
+      if (!res.ok) {
+        throw new Error('Something went wrong!')
+      }
+      return res.json()
+    })
 }
 
 export { fetchAllData };

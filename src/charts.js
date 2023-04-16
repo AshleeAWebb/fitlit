@@ -4,7 +4,7 @@ let charts = [];
 
 let displayChart = (weekData, location, chartLabel) => {
 
-  const data = [    { day: "", activity:"" },    { day: "", activity:"" },    { day: "", activity:"" },    { day: "", activity:"" },    { day: "", activity: "" },    { day: "", activity: "" },    { day: "", activity: "" },  ];
+  const data = [{ day: "", activity:"" }, { day: "", activity:"" }, { day: "", activity:"" }, { day: "", activity:"" }, { day: "", activity: "" }, { day: "", activity: "" }, { day: "", activity: "" } ];
 
   let chart = new Chart(
     location,

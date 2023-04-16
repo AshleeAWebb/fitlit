@@ -58,7 +58,7 @@ describe('User', () => {
   });
   
   it('should be able to retun friends friends names', () => {
-    expect(testUser.getFriends(userTestData.userTestData)).to.deep.equal(["Brycen"]);
+    expect(testUser.getFriends(userTestData.userTestData)).to.deep.equal("Brycen");
     expect(testUser2.getFriends(userTestData.userTestData)).to.equal("Embrace the Solitude");
   });
 

@@ -53,6 +53,12 @@ formInputs.forEach(input => inputs.push(input));
 
 // DM Methods
 
+const checkValue = () => {
+  if (inputs.every(input => input.value)) {
+    inputError.innerText = "";
+  }
+}
+
 const getUserData = (infoType, array, userInst = user) => {
   return array[infoType].filter(data => data.userID === userInst.id).reverse();
 };
@@ -123,14 +129,13 @@ const displayActivity = () => {
 };
 
 const resetDOM = () => {
-  charts[2].destroy()
-  charts.pop()
-  displayActivity()
-  console.log('chart', charts)
+  charts[2].destroy();
+  charts.pop();
+  displayActivity();
   inputError.innerText = "";
   userInputForm.reset();
   modal.style.display = "none";
-}
+};
 
 const motivationHandler = (event) => {
   let motivationLvl = event.target.parentNode?.id ?? event.target.id;
@@ -165,8 +170,10 @@ window.addEventListener('load', () => {
 
       popUpMotovationBox.classList.add('open-popUp');
     })
-  .catch(err => console.log(err.message));
+  .catch(err => console.log(err));
 });
+
+inputs.forEach(input => input.addEventListener('input', checkValue))
 
 openModalBtn.onclick = function() {
   modal.style.display = "block";
@@ -197,7 +204,7 @@ userInputForm.addEventListener('submit', function(event) {
   event.preventDefault();
   
   if (inputs.some(input => !input.value)) {
-    inputError.innerText = "all fields are required";
+    inputError.innerText = "All fields are required";
   } else {
     const userInputData = {
       userID: user.id,
@@ -208,18 +215,16 @@ userInputForm.addEventListener('submit', function(event) {
     };
 
     postActivityData(userInputData)
-    .then(res => res.json())
     .then(res => {
-      console.log('successfully recorded: ', res);
+      console.log('POST successful: ', res);
 
       fetchActivityData()
-      .then(res => res.json())
       .then(data => {
         user.activity = new Activity(getUserData('activityData', data), user.strideLength);
         resetDOM()
       })
-      .catch(err => console.log(err.message));
+      .catch(err => console.log(err));
     })
-    .catch(err => console.log(err.message));
-  }
+    .catch(err => console.log(err));
+   }
 });
