@@ -97,40 +97,48 @@ li {
   box-shadow: $box-shadow;
   background-color: white;
   border-radius: 50px;
+  
 }
 
-  .activity-info-box {
-    height: 100%;
-    width: 25%;
-    padding: 10px;
-    position: relative;
-    max-height: 240px;
-    margin: 3px;
-
+.activity-info-box {
+  height: 100%;
+  width: 25%;
+  padding: 10px;
+  position: relative;
+  max-height: 240px;
+  margin: 3px;
+  
+  
+  .main-activity-header {
+    font-size: 1.5em;
+  }
+  
     h2 {
       font-size: 20px;
     }
   }
 
-.activity-chart {
-  height: 250px;
-  width: 320px;
-}
+  .activity-chart {
+    height: 250px;
+    width: 320px;
+    padding-left: 30px;
+  }
 
 .activity-info {
   width: 350px;
   height: 90px;
 }
 
-.activity {
-  border-radius: 50px;
-  justify-content: center;
-  border: none;
-}
+  .activity {
+    border-radius: 50px;
+    justify-content: center;
+    border: none;
+  }
 
-.activityUserStat {
-  margin-top: 15px;
-}
+  .activityUserStat {
+    margin-top: 15px;
+    padding-bottom: 40px;
+  }
 
 /*Other boxes */
 .sleep, .activity, .hydration {
@@ -407,10 +415,3 @@ form {
     width: 90%;
   }
 }
-
-
-
-
-
-
-
