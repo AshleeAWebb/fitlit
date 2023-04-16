@@ -62,9 +62,9 @@ ul {
   padding: 5px;
 }
 
-  li {
-    list-style-type: none;
-  }
+li {
+  list-style-type: none;
+}
 
 .button{
   box-shadow: $box-shadow;
@@ -124,10 +124,10 @@ ul {
     padding-left: 30px;
   }
 
-  .activity-info {
-    width: 350px;
-    height: 90px;
-  }
+.activity-info {
+  width: 350px;
+  height: 90px;
+}
 
   .activity {
     border-radius: 50px;
@@ -153,6 +153,70 @@ ul {
   display: flex;
   flex-direction: column;
   box-shadow: $box-shadow;
+}
+
+/* Motivation PopUp */
+.popup {
+  background:#fefefe;
+  border-radius: 6px;
+  position: absolute;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  padding: 0 30px 30px;
+  visibility: hidden;
+  width: 100%;
+  height: 180%;
+  background-color: rgba(50, 50, 50, .7);
+}
+
+#popUpContent {
+  width: 50vw;
+  height: 35vh;
+  background-color: white;
+  border: 5px solid $blue;
+}
+
+.open-popUp{
+  visibility: visible;
+}
+
+.motivationHeader {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  height: 20%;
+}
+
+.motivation-buttons {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 90%;
+  align-items: center;
+}
+
+.saying {
+  margin-top: -15px;
+  font-size: 30px;
+  box-shadow: -2px 0px 6px 1px $blue;
+  border: none;
+  border-radius: 50px;
+}
+
+#high, #medium, #low {
+  box-shadow: -2px 0px 6px 1px $blue;
+  border: none;
+  border-radius: 50px;
+
+  &:hover, &:focus {
+    background-color: $blue;
+    text-decoration: none;
+    cursor: pointer;
+  }
 }
 
 /* logo, header, user info */
@@ -351,9 +415,3 @@ form {
     width: 90%;
   }
 }
-
-
-
-
-
-
