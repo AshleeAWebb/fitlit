@@ -8,13 +8,14 @@ import { charts } from '../src/charts';
 import dayjs from 'dayjs';
 import './css/styles.scss';
 import './images/fitlit-logo.png';
-import './images/hydration-logo.png';
-import './images/activity-logo.png';
-import './images/sleep-logo.png';
+import './images/high.png';
+import './images/medium.png';
+import './images/low.png';
 import User from '../src/User';
 import Sleep from '../src/Sleep';
 import Hydration from '../src/Hydration';
 import Activity from '../src/Activity';
+import './data/motivation-data'
 
 // Queury Selectors
 const firstName = document.getElementById('userName'),
@@ -31,7 +32,13 @@ const firstName = document.getElementById('userName'),
       openModalBtn = document.getElementById('openModalBtn'),
       closeBtn = document.querySelector(".close-btn"),
       stepChallengeBox = document.getElementById('stepChallengeBox'),
-      inputError = document.getElementById('errorMessage');
+      inputError = document.getElementById('errorMessage'),
+      userInputButton = document.getElementById('userInputBtn'),
+      popUpMotovationBox = document.getElementById('popUp'),
+      closeMotovationButton = document.getElementById('close-motovation-btn'),
+      motivationButtonContainer = document.querySelector('.motivation-buttons'),
+      motivationButtons = document.querySelectorAll('.motivation-buttons');
+      // motivationSaying = document.getElementById('.motivationQuestion');;
 
 // Global Variables
 let users,
@@ -124,6 +131,23 @@ const resetDOM = () => {
   modal.style.display = "none";
 }
 
+const motivationHandler = (/*event*/) => {
+  // let id = event.target.parentNode?.id ?? event.target.id
+  const motivationSayings = [
+    "Your Failure is not final! It is the courage to continue that counts",
+    "The best view comes after the hardest climb.",
+    "BIG journeys begin with SMALL steps.",
+    "Fear kills more dreams than failure ever will!",
+    "Optimism is a happiness magnet. If you stay positive, good things and good people will be drawn to you!",
+    "Stay positive... Better days are on their way!!!",
+    "Everyday is another chance to be better!",
+    "Balance is not something you find. It's something that you create."
+  ];
+  const saying = motivationSayings[Math.trunc(Math.random() * motivationSayings.length)];
+
+  motivationButtonContainer.innerHTML = saying;
+}
+
 // Event Listeners
 window.addEventListener('load', () => {
   fetchAllData()
@@ -145,6 +169,8 @@ window.addEventListener('load', () => {
       createFriends(data);
       postChallengeStats();
       displayChallengeChart(stepChallengeBox, userChallengeData, friendsChallengeData);
+
+      popUpMotovationBox.classList.add('open-popUp')
     })
   .catch(err => console.log(err.message));
 });
@@ -161,6 +187,17 @@ window.onclick = function(event) {
   if (event.target == modal) {
     modal.style.display = "none";
   };
+};
+
+closeMotovationButton.onclick = () => {
+  popUpMotovationBox.classList.remove('open-popUp')
+  userInputButton.style.visibility = 'visible' 
+}
+
+
+motivationButtons.forEach((b) => b.addEventListener('click', motivationHandler))
+openModalBtn.onclick = function() {
+  modal.style.display = "block";
 };
 
 userInputForm.addEventListener('submit', function(event) {
