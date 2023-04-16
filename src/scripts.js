@@ -121,9 +121,9 @@ const displayActivity = () => {
 };
 
 const resetDOM = () => {
-  charts[2].destroy()
-  charts.pop()
-  displayActivity()
+  charts[2].destroy();
+  charts.pop();
+  displayActivity();
   inputError.innerText = "";
   userInputForm.reset();
   modal.style.display = "none";
@@ -151,7 +151,7 @@ window.addEventListener('load', () => {
       postChallengeStats();
       displayChallengeChart(stepChallengeBox, userChallengeData, friendsChallengeData);
     })
-  .catch(err => console.log(err.message));
+  .catch(err => console.log(err));
 });
 
 inputs.forEach(input => input.addEventListener('input', checkValue))
@@ -185,18 +185,16 @@ userInputForm.addEventListener('submit', function(event) {
     };
 
     postActivityData(userInputData)
-    .then(res => res.json())
     .then(res => {
-      console.log('successfully recorded: ', res);
+      console.log('POST successful: ', res);
 
       fetchActivityData()
-      .then(res => res.json())
       .then(data => {
         user.activity = new Activity(getUserData('activityData', data), user.strideLength);
         resetDOM()
       })
-      .catch(err => console.log(err.message));
+      .catch(err => console.log(err));
     })
-    .catch(err => console.log(err.message));
+    .catch(err => console.log(err));
    }
 });
