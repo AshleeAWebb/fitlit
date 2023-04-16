@@ -61,7 +61,7 @@ const postChallengeStats = () => {
 userChallengeData = getStepChallengeStats(user);
 user.friends.forEach(friend => {
   friendsChallengeData.push(getStepChallengeStats(friend));
-});
+  });
 };
 
 const getStepChallengeStats = (challenger) => {
@@ -118,11 +118,10 @@ const resetDOM = () => {
   charts[2].destroy()
   charts.pop()
   displayActivity()
-  console.log('chart', charts)
   inputError.innerText = "";
   userInputForm.reset();
   modal.style.display = "none";
-}
+};
 
 // Event Listeners
 window.addEventListener('load', () => {
