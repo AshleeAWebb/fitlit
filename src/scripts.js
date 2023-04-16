@@ -5,6 +5,7 @@ import { fetchActivityData } from '../src/apiCalls';
 import { displayChart } from '../src/charts';
 import { displayChallengeChart } from '../src/charts';
 import { charts } from '../src/charts';
+import dayjs from 'dayjs';
 import './css/styles.scss';
 import './images/fitlit-logo.png';
 import './images/hydration-logo.png';
@@ -24,37 +25,59 @@ const firstName = document.getElementById('userName'),
       hydrationWeek = document.getElementById('hydrationBoxWeek'),
       activityInfo = document.getElementById('activityInfoBox'),
       activityWeek = document.getElementById('activityBoxWeek'),
-
       userInputForm = document.querySelector('form'),
-
-      userInputStairs = document.getElementById('flightsOfStairs'),
-      userInputMins = document.getElementById('activeMinutes'),
-      userInputSteps = document.getElementById('numSteps'),
+      formInputs = document.querySelectorAll('.data-input'),
       modal = document.getElementById('activityModal'),
-
-      userInputButton = document.getElementById('userInputBtn'),
       openModalBtn = document.getElementById('openModalBtn'),
       closeBtn = document.querySelector(".close-btn"),
-      stepChallengeBox = document.getElementById('stepChallengeBox');
+      stepChallengeBox = document.getElementById('stepChallengeBox'),
+      inputError = document.getElementById('errorMessage');
 
 // Global Variables
 let users,
     user,
     userChallengeData,
-    friendsChallengeData = [];
+    friendsChallengeData = [],
+    inputs = [];
 
-userInputButton.disabled = true;
+formInputs.forEach(input => inputs.push(input));
 
-// DOM Methods
-let changeButton = () => {
-  if (userInputStairs.value && userInputMins.value && userInputSteps.value) {
-    userInputButton.disabled = false;
+
+// DM Methods
+
+const checkValue = () => {
+  if (inputs.every(input => input.value)) {
+    inputError.innerText = "";
   }
+}
+
+const getUserData = (infoType, array, userInst = user) => {
+  return array[infoType].filter(data => data.userID === userInst.id).reverse();
 };
 
-const getUserData = (infoType, array) => {
-  return array[infoType].filter(data => data.userID === user.id).reverse();
+const createFriends = (info) => {
+  user.friends = user.friends.map(friend => {
+    return new User(users.find(user => user.id === friend));
+  });
+  user.friends.forEach(friend => {
+    friend.activity = new Activity(getUserData('activityData', info[3], friend));    });
 };
+
+const postChallengeStats = () => {
+userChallengeData = getStepChallengeStats(user);
+user.friends.forEach(friend => {
+  friendsChallengeData.push(getStepChallengeStats(friend));
+  });
+};
+
+const getStepChallengeStats = (challenger) => {
+const averageStepGoal = challenger.dailyStepGoal;
+const stepsForTheWeek = challenger.activity.getLatestWeek();
+const dailyGoalAchieved = stepsForTheWeek.filter((steps) => steps >= averageStepGoal);
+return { name: challenger.name, daysReached: dailyGoalAchieved.length };
+};
+
+//DOM methods
 
 const displayCurrentUser = (user) => {
   firstName.innerText = `${user.getName()}`;
@@ -97,40 +120,14 @@ const displayActivity = () => {
   displayChart(weekData, activityWeek, "Activity for the Week");
 };
 
-const getStepChallengeStats = (challenger) => {
-  const averageStepGoal = challenger.dailyStepGoal;
-  const stepsForTheWeek = challenger.activity.getLatestWeek();
-  const dailyGoalAchieved = stepsForTheWeek.filter((steps) => steps >= averageStepGoal);
-
-  return { name: challenger.name, daysReached: dailyGoalAchieved.length };
+const resetDOM = () => {
+  charts[2].destroy()
+  charts.pop()
+  displayActivity()
+  inputError.innerText = "";
+  userInputForm.reset();
+  modal.style.display = "none";
 };
-
-  const createFriends = (info) => {
-    user.friends = user.friends.map(friend => {
-      return new User(users.find(anom => anom.id === friend))
-    });
-    user.friends.forEach(friend => {
-      friend.activity = new Activity(info[3].activityData.filter(activ => activ.userID === friend.id).reverse());
-    });
-  };
-
-  const postChallengeStats = () => {
-    userChallengeData = getStepChallengeStats(user);
-    user.friends.forEach(friend => {
-      friendsChallengeData.push(getStepChallengeStats(friend))
-    });
-  };
-
-  const convertDate = () => {
-  let splitDate = userInputDate.value.split('')
-  splitDate.forEach((num, index) => {
-    if (isNaN(parseInt(num))) {
-      splitDate.splice(index, 1, "/")
-    } 
-  })
-  
-  return splitDate.join('');
-}
 
 // Event Listeners
 window.addEventListener('load', () => {
@@ -140,7 +137,6 @@ window.addEventListener('load', () => {
 
       user = new User(data[0].users[Math.floor(Math.random() * 50)]);
       displayCurrentUser(user);
-
 
       user.hydration = new Hydration(getUserData('hydrationData', data[1]));
       displayHydration(user.id);
@@ -155,8 +151,10 @@ window.addEventListener('load', () => {
       postChallengeStats();
       displayChallengeChart(stepChallengeBox, userChallengeData, friendsChallengeData);
     })
-  .catch(err => console.log(err.message))
+  .catch(err => console.log(err.message));
 });
+
+inputs.forEach(input => input.addEventListener('input', checkValue))
 
 openModalBtn.onclick = function() {
   modal.style.display = "block";
@@ -172,37 +170,33 @@ window.onclick = function(event) {
   };
 };
 
-[userInputStairs, userInputMins, userInputSteps].forEach(input => input.addEventListener('input', changeButton))
-
 userInputForm.addEventListener('submit', function(event) {
   event.preventDefault();
+  
+  if (inputs.some(input => !input.value)) {
+    inputError.innerText = "All fields are required";
+  } else {
+    const userInputData = {
+      userID: user.id,
+      date: dayjs().format('YYYY/MM/DD'),
+      flightsOfStairs: parseInt(inputs.find(input => input.id === "flightsOfStairs").value),
+      minutesActive: parseInt(inputs.find(input => input.id === "activeMinutes").value),
+      numSteps: parseInt(inputs.find(input => input.id === "numSteps").value)
+    };
 
-  const userInputData = {
-    userID: user.id,
-    date: convertDate(),
-    flightsOfStairs: parseInt(userInputStairs.value),
-    minutesActive: parseInt(userInputMins.value),
-    numSteps: parseInt(userInputSteps.value)
-  };
-
-  postActivityData(userInputData)
-  .then(res => res.json())
-  .then(res => {
-    console.log(res)
-
-    fetchActivityData()
+    postActivityData(userInputData)
     .then(res => res.json())
-    .then(data => {
-      user.activity = new Activity(getUserData('activityData', data), user.strideLength);
-      charts[2].destroy()
-      charts.splice(2,1)
-      displayActivity()
+    .then(res => {
+      console.log('successfully recorded: ', res);
+
+      fetchActivityData()
+      .then(res => res.json())
+      .then(data => {
+        user.activity = new Activity(getUserData('activityData', data), user.strideLength);
+        resetDOM()
+      })
+      .catch(err => console.log(err.message));
     })
     .catch(err => console.log(err.message));
-  })
-  .catch(err => console.log(err.message));
-  
-  userInputForm.reset();
-  userInputButton.disabled = true;
-  modal.style.display = "none";
+   }
 });
