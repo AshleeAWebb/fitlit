@@ -8,13 +8,15 @@ import { charts } from '../src/charts';
 import dayjs from 'dayjs';
 import './css/styles.scss';
 import './images/fitlit-logo.png';
-import './images/hydration-logo.png';
-import './images/activity-logo.png';
-import './images/sleep-logo.png';
+import './images/high.png';
+import './images/medium.png';
+import './images/low.png';
+import {sayings} from'./data/motivation-data.js';
 import User from '../src/User';
 import Sleep from '../src/Sleep';
 import Hydration from '../src/Hydration';
 import Activity from '../src/Activity';
+
 
 // Queury Selectors
 const firstName = document.getElementById('userName'),
@@ -31,7 +33,13 @@ const firstName = document.getElementById('userName'),
       openModalBtn = document.getElementById('openModalBtn'),
       closeBtn = document.querySelector(".close-btn"),
       stepChallengeBox = document.getElementById('stepChallengeBox'),
-      inputError = document.getElementById('errorMessage');
+      inputError = document.getElementById('errorMessage'),
+      userInputButton = document.getElementById('userInputBtn'),
+      popUpMotovationBox = document.getElementById('popUp'),
+      closeMotovationButton = document.getElementById('close-motovation-btn'),
+      motivationButtonContainer = document.querySelector('.motivation-buttons'),
+      motivationButtons = document.querySelectorAll('.motivation-buttons'),
+      motivationQuestion = document.getElementById('popUpQuestion');
 
 // Global Variables
 let users,
@@ -64,17 +72,17 @@ const createFriends = (info) => {
 };
 
 const postChallengeStats = () => {
-userChallengeData = getStepChallengeStats(user);
-user.friends.forEach(friend => {
-  friendsChallengeData.push(getStepChallengeStats(friend));
+  userChallengeData = getStepChallengeStats(user);
+  user.friends.forEach(friend => {
+    friendsChallengeData.push(getStepChallengeStats(friend));
   });
 };
 
 const getStepChallengeStats = (challenger) => {
-const averageStepGoal = challenger.dailyStepGoal;
-const stepsForTheWeek = challenger.activity.getLatestWeek();
-const dailyGoalAchieved = stepsForTheWeek.filter((steps) => steps >= averageStepGoal);
-return { name: challenger.name, daysReached: dailyGoalAchieved.length };
+  const averageStepGoal = challenger.dailyStepGoal;
+  const stepsForTheWeek = challenger.activity.getLatestWeek();
+  const dailyGoalAchieved = stepsForTheWeek.filter((steps) => steps >= averageStepGoal);
+  return { name: challenger.name, daysReached: dailyGoalAchieved.length };
 };
 
 //DOM methods
@@ -116,7 +124,7 @@ const displayActivity = () => {
 
   activityInfo.innerHTML = `<li>Latest # of Steps: ${user.activity.getDailyActivityInfo(currentDate, 'numSteps')}</li>
   <li>Latest # of Minutes Active: ${user.activity.getDailyActivityInfo(currentDate, 'minutesActive')}</li>
-    <li>Latest Distance Walked: ${user.activity.calculateMiles(currentDate)}</li>`;
+  <li>Latest Distance Walked: ${user.activity.calculateMiles(currentDate)}</li>`;
   displayChart(weekData, activityWeek, "Activity for the Week");
 };
 
@@ -127,6 +135,15 @@ const resetDOM = () => {
   inputError.innerText = "";
   userInputForm.reset();
   modal.style.display = "none";
+};
+
+const motivationHandler = (event) => {
+  let motivationLvl = event.target.parentNode?.id ?? event.target.id;
+  const sayingsArray = sayings[motivationLvl + 'MotivationSayings'];
+  const saying = sayingsArray[Math.trunc(Math.random() * sayingsArray.length)];
+  motivationButtonContainer.classList.add('saying');
+  motivationButtonContainer.innerHTML = saying;
+  motivationQuestion.innerHTML = '';
 };
 
 // Event Listeners
@@ -150,6 +167,8 @@ window.addEventListener('load', () => {
       createFriends(data);
       postChallengeStats();
       displayChallengeChart(stepChallengeBox, userChallengeData, friendsChallengeData);
+
+      popUpMotovationBox.classList.add('open-popUp');
     })
   .catch(err => console.log(err));
 });
@@ -168,6 +187,17 @@ window.onclick = function(event) {
   if (event.target == modal) {
     modal.style.display = "none";
   };
+};
+
+closeMotovationButton.onclick = () => {
+  popUpMotovationBox.classList.remove('open-popUp');
+  userInputButton.style.visibility = 'visible';
+};
+
+
+motivationButtons.forEach((b) => b.addEventListener('click', motivationHandler))
+  openModalBtn.onclick = function() {
+  modal.style.display = "block";
 };
 
 userInputForm.addEventListener('submit', function(event) {

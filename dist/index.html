@@ -12,6 +12,20 @@
 </head>
 
 <body>
+  <div class="popup" id="popUp">
+    <div id="popUpContent">
+      <div class="motivationHeader">
+        <span>&nbsp;</span>
+        <h2 id="popUpQuestion">・How Are You Feeling Today?!・</h2>
+        <span id="close-motovation-btn" class="close-btn" tabindex="0">&times;</span>
+      </div>
+    <div class="motivation-buttons">
+      <button id="high"><img src="./images/high.png" alt="Smiley face with a thumbs up"></button>
+      <button id="medium"><img src="./images/medium.png" alt="Straight face with a thumb to the side"></button>
+      <button id="low"><img src="./images/low.png" alt="Sad face with a thumbs down"></button>
+    </div>
+  </div>
+</div>
   <header class="main-header">
     <div class="logo">
       <img class="logo-image" src="./images/fitlit-logo.png" alt="FitLit logo">
@@ -32,9 +46,9 @@
     <div class="activity-info-box">
       <ul tabindex="0" class="activity activityUserStat" id="activityInfoBox">test</ul>
       <button class="open-modal button"id="openModalBtn">Enter User Data</button>
-     </div>
+    </div>
       <div id="activityModal" class="modal">
-        <span tabindex ="0" id ="close-btn"class="close-btn">&times;</span>
+        <span tabindex="0" id="close-btn" class="close-btn">&times;</span>
         <form>
           <section class="input-box">
             <h2>Enter Today's Activity Data!</h2>
