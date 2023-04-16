@@ -58,9 +58,9 @@ ul {
   padding: 5px;
 }
 
-  li {
-    list-style-type: none;
-  }
+li {
+  list-style-type: none;
+}
 
 .button{
   box-shadow: -2px 0px 6px 0px $transparent-blue;
@@ -87,7 +87,6 @@ ul {
 }
 
 /* activity styling */
-
 .activity-container {
   align-items: center;
   height: 300px;
@@ -96,35 +95,36 @@ ul {
   border-radius: 50px;
 }
 
-  .activity-info-box {
-    height: 100%;
-    width: 25%;
-    padding: 10px;
-    position: relative;
+.activity-info-box {
+  height: 100%;
+  width: 25%;
+  padding: 10px;
+  position: relative;
 
-    h2 {
-      font-size: 20px;
-    }
+  h2 {
+    font-size: 20px;
   }
+}
 
-  .activity-chart {
-    height: 250px;
-    width: 320px;
-  }
+.activity-chart {
+  height: 250px;
+  width: 320px;
+}
 
-  .activity-info {
-    width: 350px;
-    height: 90px;
-  }
+.activity-info {
+  width: 350px;
+  height: 90px;
+}
 
-  .activity {
-    border-radius: 50px;
-    justify-content: center;
-    border: none;
-  }
-  .activityUserStat {
-    margin-top: 15px;
-  }
+.activity {
+  border-radius: 50px;
+  justify-content: center;
+  border: none;
+}
+
+.activityUserStat {
+  margin-top: 15px;
+}
 
 /*Other boxes */
 .sleep, .activity, .hydration {
@@ -142,7 +142,7 @@ ul {
 }
 
 /* Motivation PopUp */
-.popup{
+.popup {
   background:#fefefe;
   border-radius: 6px;
   position: absolute;
@@ -155,15 +155,16 @@ ul {
   visibility: hidden;
   width: 100%;
   height: 180%;
-  background-color: rgba(50, 50, 50, .5);
+  background-color: rgba(50, 50, 50, .7);
 }
 
-#popUpContent{
+#popUpContent {
   width: 50vw;
   height: 35vh;
   background-color: white;
   border: 5px solid $blue;
 }
+
 .open-popUp{
   visibility: visible;
 }
@@ -173,10 +174,7 @@ ul {
   flex-direction: row;
   justify-content: space-between;
   width: 100%;
-}
-
-.hide {
-  visibility: hidden;
+  height: 20%;
 }
 
 .motivation-buttons {
@@ -186,12 +184,26 @@ ul {
   width: 90%;
   align-items: center;
 }
-#high, #medium, #low {
+
+.saying {
+  margin-top: -15px;
+  font-size: 30px;
   box-shadow: -2px 0px 6px 1px $blue;
   border: none;
   border-radius: 50px;
 }
 
+#high, #medium, #low {
+  box-shadow: -2px 0px 6px 1px $blue;
+  border: none;
+  border-radius: 50px;
+
+  &:hover, &:focus {
+    background-color: $blue;
+    text-decoration: none;
+    cursor: pointer;
+  }
+}
 
 /* logo, header, user info */
 .logo {
@@ -388,6 +400,7 @@ form {
     width: 90%;
   }
 }
+
 
 
 
