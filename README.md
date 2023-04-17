@@ -21,7 +21,7 @@ This project was completed during two 1 week sprints in the second module of the
 10. To stop the local server from running in your terminal use command + c
 
 ## FitLit at a glance
-![Giph of project](https://media0.giphy.com/media/skPpSh8M5vEO4zQGqG/giphy.gif)
+![Giph of project](https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjZkYjJhN2ZhNmI3ODA5M2MzYmEwYzFiNGYzNDY0YzQxM2IxMGRiOCZjdD1n/ld96DJiJFV6LuUsfHJ/giphy.gif)
 ## Technologies Used
 - JavaScript
 - HTML5
